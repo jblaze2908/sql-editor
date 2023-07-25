@@ -4,7 +4,7 @@ import styles from "./Modal.module.scss";
 import { ModalProps } from "./Modal.types";
 
 export default function Modal({
-    isOpen,
+  isOpen,
   hideModal,
   className,
   overlayClassName,
@@ -15,8 +15,8 @@ export default function Modal({
   }
   return (
     <ReactModal
-      appElement={document.getElementById("modals") as HTMLElement}
       isOpen={isOpen}
+      parentSelector={() => document.getElementById("modals") as HTMLElement}
       className={className || styles.modal}
       overlayClassName={overlayClassName || styles.overlay}
       onRequestClose={hideModal}

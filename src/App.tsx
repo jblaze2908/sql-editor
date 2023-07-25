@@ -1,12 +1,7 @@
 import SqlWorkspace from "./pages/SqlWorkspace/SqlWorkspace";
-import Providers from "./providers";
 
 function App() {
-  return (
-    <Providers>
-      <SqlWorkspace />
-    </Providers>
-  );
+  return <SqlWorkspace />;
 }
 
 export default App;

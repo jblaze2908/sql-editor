@@ -67,6 +67,7 @@ export default function ResizableContainer({
         return [
           element,
           <Resizer
+            key={`resizer-${index}`}
             direction={direction}
             onResize={(delta) => {
               handleResize(index, delta);

@@ -112,7 +112,9 @@ export default function SqlEditor() {
           formatQuery={formatQuery}
           clearEditor={clearEditor}
           runQuery={executeQuery}
-          saveQuery={() => {}}
+          saveQuery={() => {
+            setShowSaveQueryModal(true);
+          }}
         />
       </div>
       <div className={styles.editor}>

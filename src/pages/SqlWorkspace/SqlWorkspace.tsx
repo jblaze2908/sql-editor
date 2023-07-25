@@ -20,7 +20,7 @@ export default function SqlWorkspace() {
           <ResizablePanel>
             <ResizableContainer
               direction="Y"
-              initialSizes={[30, 70]}
+              initialSizes={[40, 60]}
               sizesForCollapse={[2, 2]}
             >
               <ResizablePanel>

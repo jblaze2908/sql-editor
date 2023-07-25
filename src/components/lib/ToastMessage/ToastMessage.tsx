@@ -4,19 +4,23 @@ import "react-toastify/dist/ReactToastify.css";
 
 import type { ToastMessageType } from "./ToastMessage.types";
 import type { Id } from "react-toastify";
+import { useContext } from "react";
+import { ThemeContext } from "@/context/theme-context";
 
 export default function ToastMessage() {
+  const { theme } = useContext(ThemeContext);
   return (
     <ToastContainer
       position="bottom-center"
       autoClose={4000}
       newestOnTop={false}
       closeOnClick
+      hideProgressBar
       rtl={false}
       pauseOnFocusLoss
       draggable
       pauseOnHover={false}
-      theme="dark"
+      theme={theme}
     />
   );
 }
