@@ -1,9 +1,10 @@
+import * as React from "react";
 import { FixedSizeList as List } from "react-window";
 import clsx from "clsx";
 import styles from "./Table.module.scss";
 import type { TableProps } from "./Table.types";
 
-export default function Table<T extends Record<string, unknown>>({
+function Table<T extends Record<string, unknown>>({
   columns,
   rows,
   windowed = false,
@@ -13,8 +14,8 @@ export default function Table<T extends Record<string, unknown>>({
     <table className={styles.table}>
       <tr className={clsx(styles.header, styles.row)}>
         <th className={styles.item}>SNo.</th>
-            {columns.map((column: string, index: number) => (
-                         <th key={index} className={styles.item}>
+        {columns.map((column: string, index: number) => (
+          <th key={index} className={styles.item}>
             {column}
           </th>
         ))}
@@ -62,3 +63,4 @@ export default function Table<T extends Record<string, unknown>>({
     </table>
   );
 }
+export default React.memo(Table);

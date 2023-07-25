@@ -42,30 +42,33 @@ export default function SqlEditor() {
   const executeQuery = useCallback(() => {
     executeQueryFunc(editorValueRef.current);
   }, []);
+  const displaySaveQueryModal = () => {
+    setShowSaveQueryModal(true);
+  };
 
   const keyMaps = useMemo(() => {
     return {
       "Ctrl-s": () => {
         if (editorValueRef.current) {
-          setShowSaveQueryModal(true);
+          displaySaveQueryModal();
         }
         return false;
       },
       "Ctrl-S": () => {
         if (editorValueRef.current) {
-          setShowSaveQueryModal(true);
+          displaySaveQueryModal();
         }
         return false;
       },
       "Cmd-s": () => {
         if (editorValueRef.current) {
-          setShowSaveQueryModal(true);
+          displaySaveQueryModal();
         }
         return false;
       },
       "Cmd-S": () => {
         if (editorValueRef.current) {
-          setShowSaveQueryModal(true);
+          displaySaveQueryModal();
         }
         return false;
       },
@@ -112,9 +115,7 @@ export default function SqlEditor() {
           formatQuery={formatQuery}
           clearEditor={clearEditor}
           runQuery={executeQuery}
-          saveQuery={() => {
-            setShowSaveQueryModal(true);
-          }}
+          saveQuery={displaySaveQueryModal}
         />
       </div>
       <div className={styles.editor}>

@@ -1,6 +1,19 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import {
+  createContext,
+  startTransition,
+  useCallback,
+  useContext,
+  useEffect,
+  // useMemo,
+  useState,
+} from "react";
 import { executeQueryApi } from "@/api/api";
-import { generateRandomId } from "@/utils/helperFunc";
+import {
+  generateRandomId,
+  getDefaultActiveTabs,
+  getDefaultSavedQueries,
+  getNewTab,
+} from "@/utils/helperFunc";
 import { useLocalStorage } from "@/utils/hooks/useLocalStorage";
 import {
   QueryHistoryItem,
@@ -74,40 +87,42 @@ const SqlWorkspaceProvider = ({ children }: SqlWorkspaceProviderProps) => {
     getDefaultSavedQueries()
   );
 
-  const addQueryToHistory = (
-    query: string,
-    success: boolean,
-    response?: QueryResult
-  ) => {
-    const historyItem: QueryHistoryItem = {
-      Action: query.replace(/\s+/g, " ").trim(),
-      Result:
-        success && response
-          ? `${response.rows.length} row(s) fetched`
-          : "Failed to fetch",
-    };
-    setQueryHistory((prev) => [...prev, historyItem]);
-  };
-  const executeQuery = async (queryFromArgs?: string) => {
-    try {
-      const query = queryFromArgs || editorValue;
-      if (!query || isLoading) return;
-      setIsLoading(true);
-      const response = await executeQueryApi(query);
-      addQueryToHistory(query, true, response);
-      setQueryResults(response);
-    } catch (err) {
-      addQueryToHistory(editorValue, false, undefined);
-      setQueryResults(undefined);
-      showToastMessage("error", "There was some issue while fetching.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const addQueryToHistory = useCallback(
+    (query: string, success: boolean, response?: QueryResult) => {
+      const historyItem: QueryHistoryItem = {
+        Action: query.replace(/\s+/g, " ").trim(),
+        Result:
+          success && response
+            ? `${response.rows.length} row(s) fetched`
+            : "Failed to fetch",
+      };
+      startTransition(() => {
+        setQueryHistory((prev) => [...prev, historyItem]);
+      });
+    },
+    []
+  );
+  const executeQuery = useCallback(
+    async (queryFromArgs?: string) => {
+      try {
+        const query = queryFromArgs || editorValue;
+        if (!query || isLoading) return;
+        setIsLoading(true);
+        const response = await executeQueryApi(query);
+        addQueryToHistory(query, true, response);
+        setQueryResults(response);
+      } catch (err) {
+        addQueryToHistory(editorValue, false, undefined);
+        setQueryResults(undefined);
+        showToastMessage("error", "There was some issue while fetching.");
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [editorValue, isLoading]
+  );
 
-  const updateEditorValue = (newValue: string) => {
-    setEditorValue(newValue);
-  };
+  const updateEditorValue = setEditorValue;
 
   const updateStateAccordingToTab = (tab: TabData) => {
     setEditorValue(tab.editorValue);
@@ -115,16 +130,21 @@ const SqlWorkspaceProvider = ({ children }: SqlWorkspaceProviderProps) => {
     setQueryResultsActiveTab(tab.resultsActiveTab);
     setQueryResultsFilterValue(tab.filterValue);
   };
+
   const saveCurrentTabDataToObject = (tabData: TabData) => {
     tabData.queryResult = queryResults;
     tabData.editorValue = editorValue;
     tabData.filterValue = queryResultsFilterValue;
     tabData.resultsActiveTab = queryResultsActiveTab;
   };
-  const deleteTab = (id: string) => {
-    const updatedTabs = activeTabs.filter((tab) => tab.id !== id);
-    setActiveTabs(updatedTabs);
-  };
+  const deleteTab = useCallback(
+    (id: string) => {
+      const updatedTabs = activeTabs.filter((tab) => tab.id !== id);
+      setActiveTabs(updatedTabs);
+    },
+    [activeTabs]
+  );
+
   useEffect(() => {
     if (activeTabs.length) {
       const activeTab = activeTabs.find((item) => item.isActive);
@@ -135,33 +155,39 @@ const SqlWorkspaceProvider = ({ children }: SqlWorkspaceProviderProps) => {
       createNewTab();
     }
   }, [activeTabs.length]);
-  const createNewTab = (initialEditorValue: string = "") => {
-    if (isLoading) return;
-    if (activeTabs.length >= 8) {
-      showToastMessage("error", "You can only create upto 8 tabs.");
-      return;
-    }
-    const updatedTabs = activeTabs.map((tab) => {
-      if (tab.isActive) saveCurrentTabDataToObject(tab);
-      return { ...tab, isActive: false };
-    });
-    const newTab: TabData = getNewTab(
-      initialEditorValue,
-      updatedTabs.length + 1
-    );
-    setActiveTabs([...updatedTabs, newTab]);
-    updateStateAccordingToTab(newTab);
-  };
-  const switchToTab = (id: string) => {
-    if (isLoading) return;
-    const updatedTabs = activeTabs.map((tab) => {
-      if (tab.isActive) saveCurrentTabDataToObject(tab);
-      return { ...tab, isActive: tab.id === id };
-    });
-    const activeTab = updatedTabs.find((tab) => tab.isActive);
-    setActiveTabs(updatedTabs);
-    if (activeTab) updateStateAccordingToTab(activeTab);
-  };
+  const createNewTab = useCallback(
+    (initialEditorValue: string = "") => {
+      if (isLoading) return;
+      if (activeTabs.length >= 8) {
+        showToastMessage("error", "You can only create upto 8 tabs.");
+        return;
+      }
+      const updatedTabs = activeTabs.map((tab) => {
+        if (tab.isActive) saveCurrentTabDataToObject(tab);
+        return { ...tab, isActive: false };
+      });
+      const newTab: TabData = getNewTab(
+        initialEditorValue,
+        updatedTabs.length + 1
+      );
+      setActiveTabs([...updatedTabs, newTab]);
+      updateStateAccordingToTab(newTab);
+    },
+    [isLoading, activeTabs]
+  );
+  const switchToTab = useCallback(
+    (id: string) => {
+      if (isLoading) return;
+      const updatedTabs = activeTabs.map((tab) => {
+        if (tab.isActive) saveCurrentTabDataToObject(tab);
+        return { ...tab, isActive: tab.id === id };
+      });
+      const activeTab = updatedTabs.find((tab) => tab.isActive);
+      setActiveTabs(updatedTabs);
+      if (activeTab) updateStateAccordingToTab(activeTab);
+    },
+    [isLoading, activeTabs]
+  );
   const saveQuery = (title: string) => {
     setSavedQueries((prev: SavedQueryItem[]) => [
       ...prev,
@@ -174,36 +200,25 @@ const SqlWorkspaceProvider = ({ children }: SqlWorkspaceProviderProps) => {
     );
     if (savedQuery) createNewTab(savedQuery.query);
   };
-  const sqlWorkspaceData = useMemo(() => {
-    return {
-      activeTabs,
-      isLoading,
-      editorValue,
-      updateEditorValue,
-      queryHistory,
-      executeQuery,
-      savedQueries,
-      saveQuery,
-      createNewTab,
-      deleteTab,
-      switchToTab,
-      restoreSavedQuery,
-      queryResults,
-      queryResultsFilterValue,
-      setQueryResultsFilterValue,
-      queryResultsActiveTab,
-      setQueryResultsActiveTab,
-    };
-  }, [
+  const sqlWorkspaceData = {
     activeTabs,
     isLoading,
     editorValue,
+    updateEditorValue,
     queryHistory,
+    executeQuery,
     savedQueries,
+    saveQuery,
+    createNewTab,
+    deleteTab,
+    switchToTab,
+    restoreSavedQuery,
     queryResults,
     queryResultsFilterValue,
+    setQueryResultsFilterValue,
     queryResultsActiveTab,
-  ]);
+    setQueryResultsActiveTab,
+  };
 
   return (
     <SqlWorkspaceContext.Provider value={sqlWorkspaceData}>
@@ -223,44 +238,3 @@ const useSqlWorkspace = () => {
 };
 
 export { SqlWorkspaceProvider, useSqlWorkspace };
-
-const getDefaultActiveTabs = () =>
-  [
-    {
-      id: generateRandomId(10),
-      isActive: true,
-      queryResult: undefined,
-      title: "Sql Query 1",
-      editorValue: "",
-      filterValue: "",
-      resultsActiveTab: "RESULTS",
-    },
-  ] as TabData[];
-
-const getDefaultSavedQueries = () => [
-  {
-    title: "Fetch Products",
-    query: "SELECT * FROM products;",
-    id: generateRandomId(10),
-  },
-  {
-    title: "Fetch Customers",
-    query: "SELECT * FROM customers;",
-    id: generateRandomId(10),
-  },
-  {
-    title: "Fetch Suppliers",
-    query: "SELECT * FROM suppliers;",
-    id: generateRandomId(10),
-  },
-];
-
-const getNewTab = (editorValue: string, tabNumber: number): TabData => ({
-  id: generateRandomId(10),
-  editorValue,
-  filterValue: "",
-  isActive: true,
-  resultsActiveTab: "RESULTS",
-  queryResult: undefined,
-  title: `SQL Query ${tabNumber}`,
-});

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import Loader from "@/components/Loader/Loader";
 import { useSqlWorkspace } from "@/context/sql-workspace-context";
 import { RowObject } from "@/utils/schemas/SqlWorkspace.types";
@@ -21,6 +21,7 @@ export default function QueryResults({ newHeight }: { newHeight?: number }) {
     queryResultsActiveTab,
     setQueryResultsActiveTab,
   } = useSqlWorkspace();
+
   useEffect(() => {
     if (containerRef.current) {
       const containerHeight = containerRef.current.clientHeight;
@@ -28,28 +29,43 @@ export default function QueryResults({ newHeight }: { newHeight?: number }) {
     }
   }, [!!queryResults]);
 
-  const searchFilteredRows = (filterString: string) => {
-    if (queryResults) {
-      const filteredResults = queryResults.rows.filter((row) => {
-        const values = Object.values(row);
-        return values.some((val) =>
-          val.toString().toLowerCase().includes(filterString.toLowerCase())
-        );
-      });
-      setFilteredRows(filteredResults);
-    }
-  };
+  const searchFilteredRows = useCallback(
+    (filterString: string) => {
+      if (queryResults) {
+        const filteredResults = queryResults.rows.filter((row) => {
+          const values = Object.values(row);
+          return values.some((val) =>
+            val.toString().toLowerCase().includes(filterString.toLowerCase())
+          );
+        });
+        setFilteredRows(filteredResults);
+      }
+    },
+    [queryResults]
+  );
 
   useEffect(() => {
-    if (!queryResultsFilterValue) {
-      setFilteredRows(queryResults?.rows || []);
-    }
-  }, [queryResultsFilterValue, queryResults]);
-  useEffect(() => {
-    if (queryResultsFilterValue) {
+    if (!queryResultsFilterValue && queryResults) {
+      setFilteredRows(queryResults.rows);
+    } else if (queryResultsFilterValue) {
       searchFilteredRows(queryResultsFilterValue);
     }
-  }, [queryResults]);
+  }, [queryResultsFilterValue, queryResults, searchFilteredRows]);
+
+  const queryResultsMemoized = useMemo(() => {
+    console.log("rememoizing 2");
+    return queryResultsActiveTab === "METADATA"
+      ? queryResults?.fields || []
+      : filteredRows;
+  }, [queryResultsActiveTab, filteredRows, queryResults]);
+  const columnsMemoized = useMemo(() => {
+    console.log("rememoizing");
+    return queryResultsActiveTab === "METADATA"
+      ? ["name", "type"]
+      : queryResults?.rows.length
+      ? Object.keys(queryResults.rows[0])
+      : [];
+  }, [queryResultsActiveTab, queryResults]);
   if (isLoading) {
     return (
       <div className={styles.container}>
@@ -83,19 +99,9 @@ export default function QueryResults({ newHeight }: { newHeight?: number }) {
       />
       <div className={styles.content} ref={containerRef}>
         <Table
-          columns={
-            queryResultsActiveTab === "METADATA"
-              ? ["name", "type"]
-              : queryResults?.rows.length
-              ? Object.keys(queryResults.rows[0])
-              : []
-          }
+          columns={columnsMemoized}
           height={newHeight ? newHeight - 58 : tableHeight - 5 || 0}
-          rows={
-            queryResultsActiveTab === "METADATA"
-              ? queryResults.fields || []
-              : filteredRows
-          }
+          rows={queryResultsMemoized}
           windowed
         />
       </div>

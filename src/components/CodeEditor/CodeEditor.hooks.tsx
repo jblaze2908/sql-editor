@@ -55,7 +55,10 @@ export function useCodeMirror({
     if (view.current) {
       const cmValue = view.current.state.doc.toString();
       if (cmValue !== value) {
-        const cursorPos = view.current.state.selection.main.head;
+        const cursorPos = Math.min(
+          view.current.state.selection.main.head,
+          value.length
+        );
         view.current.dispatch({
           changes: {
             from: 0,
