@@ -1,0 +1,34 @@
+.container {
+  background-color: var(--bg-primary);
+  padding: 1.5rem;
+  border-radius: 14px;
+  font-family: "Inter";
+  width: 30rem;
+  color: var(--text-color-primary);
+}
+.title {
+  margin-bottom: 1rem;
+  font-weight: 600;
+  font-size: 1.4rem;
+  text-align: center;
+}
+.description {
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.input {
+  width: 100%;
+  font-size: 1.1rem;
+  padding: 0.5rem 0.75rem;
+}
+.buttons {
+  margin-top: 1.25rem;
+  display: flex;
+  gap: 2rem;
+}
+.button {
+  font-size: 0.95rem;
+  height: 2.5rem;
+  width: 6rem;
+}

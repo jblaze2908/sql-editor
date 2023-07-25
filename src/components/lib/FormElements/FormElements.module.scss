@@ -1,0 +1,38 @@
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  white-space: pre;
+  border-radius: 0.5rem;
+  height: 1.9rem;
+  padding: 0 0.85rem;
+  font-weight: 600;
+  background-color: transparent;
+}
+
+.buttonPrimary {
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary);
+  &.buttonFilled {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+  }
+}
+
+.buttonDanger {
+  border: 1px solid var(--color-danger);
+  color: var(--color-danger);
+  &.buttonFilled {
+    background-color: var(--color-danger);
+    color: var(--text-color-primary);
+  }
+}
+
+.textField {
+  border-radius: 5px;
+  background-color: transparent;
+  padding: 0.2rem 0.4rem;
+  color: var(--text-color-tertiary);
+  border: 1px solid var(--color-primary);
+}

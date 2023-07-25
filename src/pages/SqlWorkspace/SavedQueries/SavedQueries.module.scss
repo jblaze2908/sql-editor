@@ -1,0 +1,42 @@
+.container {
+  height: 100%;
+  width: 100%;
+}
+.header {
+  background-color: var(--bg-header-alt);
+  height: 2.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-color-primary);
+  white-space: pre;
+  padding: 0 0.5rem;
+}
+.content {
+  padding: 1rem;
+  overflow-y: auto;
+  height: calc(100% - 2.75rem);
+}
+.savedQuery {
+  margin-bottom: 0.5rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-neutral);
+  padding: 0.5rem 0.75rem;
+  background-color: var(--bg-header-light);
+  cursor: pointer;
+}
+.savedQueryTitle {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-color-secondary);
+  white-space: pre;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.savedQueryCommand {
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+  color: var(--text-color-tertiary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

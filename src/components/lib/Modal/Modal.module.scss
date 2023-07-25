@@ -1,0 +1,24 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999;
+  height: 100vh;
+  background-color: var(--overlay-background-color);
+  width: 100%;
+}
+.modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  box-shadow: var(--modal-box-shadow);
+  transform: translate(-50%, -50%);
+  max-width: 95%;
+  outline: none;
+  @media screen and (max-width: 30rem) {
+    width: 100%;
+  }
+  & > div {
+    max-width: 100%;
+  }
+}

@@ -1,0 +1,7 @@
+.container {
+  height: 100svh;
+}
+.ideContainer {
+  height: calc(100% - 3rem);
+  background-color: var(--bg-primary);
+}

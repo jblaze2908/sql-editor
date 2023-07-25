@@ -1,0 +1,30 @@
+.tabs {
+  display: flex;
+  height: 2.75rem;
+  background-color: var(--bg-header-alt);
+  align-items: center;
+}
+.tab {
+  cursor: pointer;
+  padding: 0 1rem;
+  display: flex;
+  white-space: pre;
+  align-items: center;
+  font-size: 0.9rem;
+  color: var(--text-color-tertiary);
+  &:not(:last-child) {
+    border-right: 1px solid var(--text-color-tertiary);
+  }
+  svg {
+    margin-top: 0.25rem;
+    margin-left: 0.5rem;
+    width: 1.25rem;
+  }
+}
+.closeIcon {
+  cursor: pointer;
+}
+.tabActive {
+  font-weight: 600;
+  color: var(--text-color-primary);
+}

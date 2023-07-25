@@ -1,0 +1,61 @@
+@import "./_reset.scss";
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap");
+
+body {
+  font-family: Inter;
+}
+:root {
+  --bg-primary: #1e1e2f;
+  --bg-header: #2a2a3a;
+  --bg-header-light: #2a2a3a;
+  --bg-header-alt: #252536;
+  --text-color-primary: #fff;
+  --text-color-secondary: #ddd;
+  --text-color-tertiary: #aaa;
+  --color-primary: #5256a9;
+  --color-secondary: #666bd3;
+  --color-danger: #c43939;
+  --color-neutral: #414150;
+  --color-resizer: #636371;
+  --color-scrollbar-thumb: #414150;
+  --shadow: 0px 0px 1px 0px rgba(0, 0, 0, 0.4),
+    0px 0px 2px 0px rgba(0, 0, 0, 0.4), 0px 4px 8px 0px rgba(0, 0, 0, 0.4);
+
+  --overlay-background-color: rgba(59, 59, 59, 0.616);
+  --modal-background-color: #fff;
+  --modal-box-shadow: 0px 4px 10px rgba(0, 77, 255, 0.04);
+  --color-white: #fff;
+}
+
+[data-theme="light"] {
+  --bg-primary: #ebebf8;
+  --bg-header: #a6acff;
+  --bg-header-light: #d5d8ff;
+  --bg-header-alt: #b3b8fc;
+
+  --text-color-primary: #2a2a3a;
+  --text-color-secondary: #2a2a3a;
+  --text-color-tertiary: rgb(8, 7, 7);
+
+  --color-primary: #5256a9;
+  --color-secondary: #666bd3;
+  --color-danger: #c43939;
+
+  --color-neutral: #ececed;
+  --color-resizer: #c0c0e3;
+  --color-scrollbar-thumb: #5f5f7295;
+  --shadow: 0px 0px 1px 0px rgba(0, 0, 0, 0.04),
+    0px 0px 2px 0px rgba(0, 0, 0, 0.06), 0px 4px 8px 0px rgba(0, 0, 0, 0.04);
+}
+
+*::-webkit-scrollbar {
+  width: 7px;
+  padding: 4px 0;
+  height: 7px;
+  cursor: pointer;
+}
+*::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  height: 30px;
+  background-color: var(--color-scrollbar-thumb);
+}

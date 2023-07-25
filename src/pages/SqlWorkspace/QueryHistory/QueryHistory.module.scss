@@ -1,0 +1,18 @@
+.container {
+  height: 100%;
+  width: 100%;
+}
+.header {
+  background-color: var(--bg-header-alt);
+  height: 2.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-color-primary);
+  white-space: pre;
+  padding: 0 0.5rem;
+}
+.content {
+  overflow-y: auto;
+  height: calc(100% - 2.75rem);
+}
