@@ -1,5 +1,4 @@
 import Table from "@/components/lib/Table";
-import { QueryHistoryItem } from "@/utils/schemas/SqlWorkspace.types";
 import { useSqlWorkspace } from "@/context/sql-workspace-context";
 
 import styles from "./QueryHistory.module.scss";
@@ -10,7 +9,7 @@ export default function QueryHistory() {
     <div className={styles.container}>
       <header className={styles.header}>Query History</header>
       <div className={styles.content}>
-        <Table<QueryHistoryItem>
+        <Table
           columns={
             queryHistory.length > 0
               ? Object.keys(queryHistory[0])
